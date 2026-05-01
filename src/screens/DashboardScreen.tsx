@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { renderComponent } from '../components/ComponentMapper';
 import { mockResponse } from '../mock/mockData';
 import { theme } from '../utils/theme';
+import { DashboardSkeleton } from '../components/DashboardSkeleton';
 
 export const DashboardScreen = () => {
   const [screenData, setScreenData] = useState<any>(null);
@@ -12,13 +13,14 @@ export const DashboardScreen = () => {
     // Simulate fetching data from backend
     setTimeout(() => {
       setScreenData(mockResponse.screen);
-    }, 500); // 500ms mock delay
+    }, 1500); // 1.5s mock delay to show skeleton
   }, []);
 
   if (!screenData) {
     return (
       <SafeAreaView style={styles.container}>
         <StatusBar barStyle="light-content" backgroundColor={theme.colors.background} />
+        <DashboardSkeleton />
       </SafeAreaView>
     );
   }
