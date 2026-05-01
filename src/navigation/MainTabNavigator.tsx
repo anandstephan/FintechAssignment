@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Image } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { DashboardScreen } from '../screens/DashboardScreen';
 import { BuyScreen } from '../screens/BuyScreen';
@@ -10,11 +10,22 @@ import { theme } from '../utils/theme';
 const Tab = createBottomTabNavigator();
 
 const CustomTabBarIcon = ({ focused, name }: { focused: boolean; name: string }) => {
+  const getIconUrl = (routeName: string) => {
+    switch (routeName) {
+      case 'Home': return 'https://cdn-icons-png.flaticon.com/512/1946/1946436.png';
+      case 'Buy': return 'https://cdn-icons-png.flaticon.com/512/1170/1170678.png';
+      case 'Sell': return 'https://cdn-icons-png.flaticon.com/512/1055/1055662.png';
+      case 'Profile': return 'https://cdn-icons-png.flaticon.com/512/1077/1077114.png';
+      default: return 'https://cdn-icons-png.flaticon.com/512/1946/1946436.png';
+    }
+  };
+
   return (
     <View style={styles.iconContainer}>
-      <Text style={[styles.icon, { color: focused ? theme.colors.primary : '#888' }]}>
-        {name === 'Home' ? '🏠' : name === 'Buy' ? '🛒' : name === 'Sell' ? '💸' : '👤'}
-      </Text>
+      <Image 
+        source={{ uri: getIconUrl(name) }} 
+        style={[styles.icon, { tintColor: focused ? theme.colors.primary : '#888' }]} 
+      />
       {focused && <View style={styles.activeIndicator} />}
     </View>
   );
@@ -67,7 +78,9 @@ const styles = StyleSheet.create({
     height: 30,
   },
   icon: {
-    fontSize: 20,
+    width: 24,
+    height: 24,
+    resizeMode: 'contain',
   },
   label: {
     fontSize: 12,
