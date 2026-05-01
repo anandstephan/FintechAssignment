@@ -18,14 +18,14 @@ const FallbackComponent = ({ type }: { type: string }) => {
   );
 };
 
-export const renderComponent = (component: any, index: number) => {
+export const renderComponent = (component: any, index: number, featureFlags: any = {}) => {
   const { type, data } = component;
 
   switch (type) {
     case 'header':
       return <Header key={`component-${index}`} data={data} />;
     case 'gold_rate_banner':
-      return <GoldRateBanner key={`component-${index}`} data={data} />;
+      return <GoldRateBanner key={`component-${index}`} data={data} enableLiveGoldRate={featureFlags?.enable_live_gold_rate} />;
     case 'investment_cards':
       return <InvestmentCards key={`component-${index}`} data={data} />;
     case 'banner_carousel':

@@ -10,9 +10,10 @@ interface GoldRateBannerProps {
     updated_at: string;
     cta_text: string;
   };
+  enableLiveGoldRate?: boolean;
 }
 
-export const GoldRateBanner: React.FC<GoldRateBannerProps> = ({ data }) => {
+export const GoldRateBanner: React.FC<GoldRateBannerProps> = ({ data, enableLiveGoldRate = true }) => {
   const [currentPrice, setCurrentPrice] = useState(data.price);
   const [currentChange, setCurrentChange] = useState(data.change);
   const [updatedAt, setUpdatedAt] = useState(data.updated_at);
@@ -20,6 +21,8 @@ export const GoldRateBanner: React.FC<GoldRateBannerProps> = ({ data }) => {
 
   // Simulate WebSocket updates
   useEffect(() => {
+    if (!enableLiveGoldRate) return;
+
     const interval = setInterval(() => {
       // Mocking a price fluctuation
       const basePrice = 9200;
@@ -48,7 +51,7 @@ export const GoldRateBanner: React.FC<GoldRateBannerProps> = ({ data }) => {
     }, 5000); // Update every 5 seconds
 
     return () => clearInterval(interval);
-  }, []);
+  }, [enableLiveGoldRate]);
 
   const isPositiveChange = currentChange.startsWith('+');
 

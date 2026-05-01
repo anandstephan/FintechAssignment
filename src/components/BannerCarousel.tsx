@@ -18,6 +18,9 @@ interface BannerCarouselProps {
 export const BannerCarousel: React.FC<BannerCarouselProps> = ({ data }) => {
   const scrollViewRef = useRef<ScrollView>(null);
   const [currentIndex, setCurrentIndex] = React.useState(0);
+  const [imageErrors, setImageErrors] = React.useState<Record<number, boolean>>({});
+
+  const fallbackImage = 'https://images.unsplash.com/photo-1610375461246-83df859d849d?auto=format&fit=crop&q=80&w=800'; // Default reliable image as fallback
 
   // Auto-scroll logic
   useEffect(() => {
@@ -50,7 +53,12 @@ export const BannerCarousel: React.FC<BannerCarouselProps> = ({ data }) => {
       >
         {data.items.map((item, index) => (
           <TouchableOpacity key={index} activeOpacity={0.9} style={styles.imageContainer}>
-            <Image source={{ uri: item.image }} style={styles.image} resizeMode="cover" />
+            <Image 
+              source={{ uri: imageErrors[index] ? fallbackImage : item.image }} 
+              style={styles.image} 
+              resizeMode="cover" 
+              onError={() => setImageErrors(prev => ({ ...prev, [index]: true }))}
+            />
           </TouchableOpacity>
         ))}
       </ScrollView>

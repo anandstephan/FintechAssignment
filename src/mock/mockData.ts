@@ -43,6 +43,12 @@ export const mockResponse = {
               icon: 'https://cdn-icons-png.flaticon.com/512/3503/3503194.png',
               cta: 'Buy Gold',
             },
+            {
+              title: 'Gold Leasing',
+              description: 'Lease gold and earn extra returns',
+              icon: 'https://cdn-icons-png.flaticon.com/512/3503/3503194.png', // Reusing an icon for demo
+              cta: 'Lease Now',
+            },
           ],
         },
       },

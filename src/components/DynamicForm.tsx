@@ -18,6 +18,9 @@ interface DynamicFormProps {
 }
 
 export const DynamicForm: React.FC<DynamicFormProps> = ({ data }) => {
+  const [formValues, setFormValues] = React.useState<Record<string, string>>({});
+  const [openDropdown, setOpenDropdown] = React.useState<string | null>(null);
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{data.title}</Text>
@@ -36,12 +39,34 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({ data }) => {
           )}
           
           {field.type === 'dropdown' && (
-            <TouchableOpacity style={styles.dropdown}>
-              <Text style={styles.dropdownText}>
-                {field.options ? field.options[0] : 'Select'}
-              </Text>
-              <Text style={styles.dropdownIcon}>▼</Text>
-            </TouchableOpacity>
+            <View style={{ zIndex: openDropdown === field.label ? 1000 : 1 }}>
+              <TouchableOpacity 
+                style={styles.dropdown}
+                onPress={() => setOpenDropdown(openDropdown === field.label ? null : field.label)}
+              >
+                <Text style={styles.dropdownText}>
+                  {formValues[field.label] || (field.options ? field.options[0] : 'Select')}
+                </Text>
+                <Text style={styles.dropdownIcon}>{openDropdown === field.label ? '▲' : '▼'}</Text>
+              </TouchableOpacity>
+              
+              {openDropdown === field.label && field.options && (
+                <View style={styles.dropdownList}>
+                  {field.options.map((opt, i) => (
+                    <TouchableOpacity 
+                      key={i} 
+                      style={styles.dropdownItem}
+                      onPress={() => {
+                        setFormValues(prev => ({ ...prev, [field.label]: opt }));
+                        setOpenDropdown(null);
+                      }}
+                    >
+                      <Text style={styles.dropdownItemText}>{opt}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              )}
+            </View>
           )}
         </View>
       ))}
@@ -105,6 +130,33 @@ const styles = StyleSheet.create({
   dropdownIcon: {
     color: theme.colors.textSecondary,
     fontSize: 12,
+  },
+  dropdownList: {
+    backgroundColor: theme.colors.surface,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    borderRadius: theme.borderRadius.s,
+    marginTop: 4,
+    position: 'absolute',
+    top: '100%',
+    left: 0,
+    right: 0,
+    zIndex: 1000,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  dropdownItem: {
+    paddingHorizontal: theme.spacing.m,
+    paddingVertical: theme.spacing.m,
+    borderBottomWidth: 1,
+    borderBottomColor: theme.colors.border,
+  },
+  dropdownItemText: {
+    color: theme.colors.text,
+    fontSize: 16,
   },
   button: {
     backgroundColor: theme.colors.background,

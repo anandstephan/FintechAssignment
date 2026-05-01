@@ -54,7 +54,7 @@ function App() {
               return null;
             }
 
-            return renderComponent(component, index);
+            return renderComponent(component, index, screenData.feature_flags);
           })}
         </ScrollView>
         {/* Render sticky CTA separately if it exists in components */}
@@ -62,7 +62,7 @@ function App() {
           if (component.type === 'sticky_cta') {
             return (
               <View key={`sticky-${index}`} style={styles.stickyContainer}>
-                {renderComponent(component, index)}
+                {renderComponent(component, index, screenData.feature_flags)}
               </View>
             );
           }
