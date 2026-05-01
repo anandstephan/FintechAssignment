@@ -40,7 +40,12 @@ function App() {
             if (component.type === 'investment_cards' && !screenData.feature_flags.show_wallet_section) {
               return null;
             }
-            // More feature flag logic can go here based on component type
+            if (component.type === 'recommended_products' && !screenData.feature_flags.show_recommendation_section) {
+              return null;
+            }
+            if (component.type === 'sticky_cta') {
+              return null;
+            }
 
             return renderComponent(component, index);
           })}

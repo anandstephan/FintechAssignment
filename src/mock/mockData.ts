@@ -62,6 +62,29 @@ export const mockResponse = {
         },
       },
       {
+        type: 'recommended_products',
+        data: {
+          items: [
+            {
+              id: '1',
+              title: '24K Digital Gold',
+              image: 'https://images.unsplash.com/photo-1610375461246-83df859d849d?auto=format&fit=crop&q=80&w=300',
+              returns: '12% p.a.',
+              risk: 'Low Risk',
+              cta: 'Buy Now'
+            },
+            {
+              id: '2',
+              title: 'Gold Mutual Fund',
+              image: 'https://images.unsplash.com/photo-1599690925059-86687258384a?auto=format&fit=crop&q=80&w=300',
+              returns: '15% p.a.',
+              risk: 'Moderate Risk',
+              cta: 'Invest'
+            }
+          ]
+        }
+      },
+      {
         type: 'dynamic_form',
         data: {
           title: 'Calculate Your Investment',
@@ -99,6 +122,10 @@ export const mockResponse = {
         type: 'sticky_cta',
         data: { text: 'Start Investment' },
       },
+      {
+        type: 'premium_exclusive_section',
+        data: {}
+      }
     ],
   },
 };

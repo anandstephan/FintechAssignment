@@ -7,6 +7,7 @@ import { BannerCarousel } from './BannerCarousel';
 import { DynamicForm } from './DynamicForm';
 import { FaqSection } from './FaqSection';
 import { StickyCta } from './StickyCta';
+import { RecommendedProducts } from './RecommendedProducts';
 import { theme } from '../utils/theme';
 
 const FallbackComponent = ({ type }: { type: string }) => {
@@ -33,6 +34,8 @@ export const renderComponent = (component: any, index: number) => {
       return <DynamicForm key={`component-${index}`} data={data} />;
     case 'faq_section':
       return <FaqSection key={`component-${index}`} data={data} />;
+    case 'recommended_products':
+      return <RecommendedProducts key={`component-${index}`} data={data} />;
     case 'sticky_cta':
       return <StickyCta key={`component-${index}`} data={data} />;
     default:

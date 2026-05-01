@@ -1,97 +1,69 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Gold Investment Platform - Server-Driven UI Dashboard
 
-# Getting Started
+This is a React Native project implementing a Server-Driven UI (SDUI) architecture for a Gold Investment Platform. The app dynamically renders its Home Dashboard layout and content based completely on a JSON payload provided by the backend, allowing instant layout updates without app store releases.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+## Setup Instructions
 
-## Step 1: Start Metro
+1. **Install Dependencies:**
+   ```sh
+   npm install
+   # OR
+   yarn install
+   ```
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+2. **iOS Pods Setup (Mac only):**
+   ```sh
+   cd ios
+   bundle install
+   bundle exec pod install
+   cd ..
+   ```
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+3. **Start the Metro Bundler:**
+   ```sh
+   npm start
+   ```
 
-```sh
-# Using npm
-npm start
+4. **Run the App:**
+   - For Android: `npm run android`
+   - For iOS: `npm run ios`
 
-# OR using Yarn
-yarn start
-```
+## Architecture Explanation
 
-## Step 2: Build and run your app
+The app leverages a Server-Driven UI engine. The backend serves a JSON structure containing `screen` metadata, `feature_flags`, and an array of `components`. 
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+- **App.tsx** fetches this JSON (simulated via local `mockData.ts`) and iterates through the `components` array.
+- **ComponentMapper.tsx** acts as a registry, mapping a `type` string (e.g., `investment_cards`) to a specific React functional component.
+- The UI is entirely decoupled from the business logic of "what" to show, enabling dynamic A/B testing and layout shifts natively driven by API responses.
 
-### Android
+*For more details, see [ARCHITECTURE.md](./ARCHITECTURE.md).*
 
-```sh
-# Using npm
-npm run android
+## Assumptions
 
-# OR using Yarn
-yarn android
-```
+- The backend response is trusted and structurally valid (e.g., if a component is of type `banner_carousel`, its `data` object will reliably contain an `items` array).
+- Real-time updates for Gold Rates are currently simulated via a `setInterval` hook in `GoldRateBanner.tsx`. In production, this would be tied to a `WebSocket` instance.
+- Feature flags are resolved client-side against the `feature_flags` object sent in the JSON.
 
-### iOS
+## Performance Decisions
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+- **Sticky CTA Extraction:** The Sticky CTA is filtered out of the main `ScrollView` list and rendered absolutely at the bottom to ensure it doesn't cause layout thrashing during scroll.
+- **Component Granularity:** Components are strictly separated, allowing for easy `React.memo` integration to prevent unnecessary re-renders when data updates (like live gold price ticks).
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+## Security Considerations
 
-```sh
-bundle install
-```
+- **Data Sanitization:** URLs for images and redirects passed from the JSON should be validated/sanitized before passing them to native components (e.g., preventing XSS via malicious deeplink URLs).
+- **Network Security:** The SDUI API payload should only be fetched over HTTPS, using cert pinning to prevent Man-in-the-Middle (MitM) attacks injecting fraudulent components (e.g., fake payment banners).
 
-Then, and every time you update your native dependencies, run:
+## Offline Fallback
 
-```sh
-bundle exec pod install
-```
+Currently, the app relies on the simulated backend fetch. In a production environment:
+1. The last successfully fetched SDUI JSON payload would be cached locally using `AsyncStorage` or `MMKV`.
+2. On app launch without internet, the cached JSON would render the layout.
+3. Components reliant on real-time data (Gold Rate) would display an "Offline" badge and disable their "Buy Now" CTAs.
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+## What I Would Improve With More Time
 
-```sh
-# Using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
-```
-
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
-
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
-
-## Step 3: Modify your app
-
-Now that you have successfully run the app, let's make changes!
-
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
-
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
-
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+- **Transition to FlatList:** Refactor `ScrollView` to `FlatList` to optimize memory usage for an infinitely growing list of SDUI components.
+- **WebSocket Integration:** Build an actual `Socket.io` or raw WebSocket hook context to manage live gold rates across the app, replacing the `setInterval` mockup.
+- **Error Boundaries:** Implement React Error Boundaries around `renderComponent` so that if one specific SDUI component crashes due to bad data, the rest of the screen remains functional.
+- **Animations:** Add `Reanimated` layout transitions for when feature flags toggle sections on and off smoothly.
