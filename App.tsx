@@ -5,8 +5,11 @@ import { renderComponent } from './src/components/ComponentMapper';
 import { mockResponse } from './src/mock/mockData';
 import { theme } from './src/utils/theme';
 
+import { LoginScreen } from './src/screens/LoginScreen';
+
 function App() {
   const [screenData, setScreenData] = useState<any>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     // Simulate fetching data from backend
@@ -14,6 +17,10 @@ function App() {
       setScreenData(mockResponse.screen);
     }, 500); // 500ms mock delay
   }, []);
+
+  if (!isLoggedIn) {
+    return <LoginScreen onLogin={() => setIsLoggedIn(true)} />;
+  }
 
   if (!screenData) {
     return (
