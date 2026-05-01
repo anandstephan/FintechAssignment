@@ -18,13 +18,20 @@ interface RecommendedProductsProps {
 }
 
 export const RecommendedProducts: React.FC<RecommendedProductsProps> = ({ data }) => {
+  const [imageErrors, setImageErrors] = React.useState<Record<string, boolean>>({});
+  const fallbackImage = 'https://images.unsplash.com/photo-1610375461246-83df859d849d?auto=format&fit=crop&q=80&w=300'; // Default reliable image
+
   return (
     <View style={styles.container}>
       <Text style={styles.sectionTitle}>Recommended Products</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
         {data.items.map((item) => (
           <View key={item.id} style={styles.card}>
-            <Image source={{ uri: item.image }} style={styles.image} />
+            <Image 
+              source={{ uri: imageErrors[item.id] ? fallbackImage : item.image }} 
+              style={styles.image} 
+              onError={() => setImageErrors(prev => ({ ...prev, [item.id]: true }))}
+            />
             <View style={styles.cardContent}>
               <Text style={styles.title}>{item.title}</Text>
               

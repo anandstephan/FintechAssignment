@@ -2,11 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, SafeAreaView, KeyboardAvoidingView, Platform, Image } from 'react-native';
 import { theme } from '../utils/theme';
 
-interface LoginScreenProps {
-  onLogin: () => void;
-}
-
-export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
+export const LoginScreen = ({ navigation }: any) => {
   const [mobile, setMobile] = useState('');
 
   return (
@@ -63,7 +59,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin }) => {
 
         <View style={styles.footer}>
           <Text style={styles.sendOtpText}>Send OTP</Text>
-          <TouchableOpacity style={styles.sendOtpButton} onPress={onLogin}>
+          <TouchableOpacity style={styles.sendOtpButton} onPress={() => navigation.navigate('Otp')}>
             <Text style={styles.arrowIcon}>→</Text>
           </TouchableOpacity>
         </View>
