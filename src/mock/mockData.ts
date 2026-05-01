@@ -28,6 +28,13 @@ export const mockResponse = {
         },
       },
       {
+        type: 'price_trend_chart',
+        data: {
+          title: 'Price Trend',
+          ranges: ['1M', '3M', '6M', '1Y', '3Y'],
+        },
+      },
+      {
         type: 'investment_cards',
         data: {
           items: [

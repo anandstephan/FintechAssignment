@@ -8,6 +8,7 @@ import { DynamicForm } from './DynamicForm';
 import { FaqSection } from './FaqSection';
 import { StickyCta } from './StickyCta';
 import { RecommendedProducts } from './RecommendedProducts';
+import { PriceTrendChart } from './PriceTrendChart';
 import { theme } from '../utils/theme';
 
 const FallbackComponent = ({ type }: { type: string }) => {
@@ -38,6 +39,8 @@ export const renderComponent = (component: any, index: number, featureFlags: any
       return <RecommendedProducts key={`component-${index}`} data={data} />;
     case 'sticky_cta':
       return <StickyCta key={`component-${index}`} data={data} />;
+    case 'price_trend_chart':
+      return <PriceTrendChart key={`component-${index}`} data={data} />;
     default:
       // Graceful degradation for unknown components
       console.warn(`Unknown component type received: ${type}`);
