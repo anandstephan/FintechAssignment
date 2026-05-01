@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { theme } from '../utils/theme';
 
 interface HeaderProps {
@@ -12,10 +13,14 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ data }) => {
+  const navigation = useNavigation<any>();
+
   return (
     <View style={styles.container}>
       <View style={styles.leftSection}>
-        <Image source={{ uri: data.profile_icon }} style={styles.profileIcon} />
+        <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+          <Image source={{ uri: data.profile_icon }} style={styles.profileIcon} />
+        </TouchableOpacity>
         <View style={styles.textContainer}>
           <Text style={styles.greeting}>{data.greeting},</Text>
           <Text style={styles.userName}>{data.user_name}</Text>
