@@ -1,44 +1,90 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
-import { NewAppScreen } from '@react-native/new-app-screen';
-import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
-import {
-  SafeAreaProvider,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context';
+import React, { useState, useEffect } from 'react';
+import { StatusBar, StyleSheet, ScrollView, View } from 'react-native';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { renderComponent } from './src/components/ComponentMapper';
+import { mockResponse } from './src/mock/mockData';
+import { theme } from './src/utils/theme';
 
 function App() {
-  const isDarkMode = useColorScheme() === 'dark';
+  const [screenData, setScreenData] = useState<any>(null);
+
+  useEffect(() => {
+    // Simulate fetching data from backend
+    setTimeout(() => {
+      setScreenData(mockResponse.screen);
+    }, 500); // 500ms mock delay
+  }, []);
+
+  if (!screenData) {
+    return (
+      <SafeAreaProvider>
+        <SafeAreaView style={styles.container}>
+          <StatusBar barStyle="light-content" backgroundColor={theme.colors.background} />
+        </SafeAreaView>
+      </SafeAreaProvider>
+    );
+  }
 
   return (
     <SafeAreaProvider>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <AppContent />
+      <SafeAreaView style={styles.container}>
+        <StatusBar barStyle="light-content" backgroundColor={theme.colors.background} />
+        <View style={styles.content}>
+
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}
+        >
+          {screenData.components.map((component: any, index: number) => {
+            // Apply feature flags
+            if (component.type === 'investment_cards' && !screenData.feature_flags.show_wallet_section) {
+              return null;
+            }
+            // More feature flag logic can go here based on component type
+
+            return renderComponent(component, index);
+          })}
+        </ScrollView>
+        {/* Render sticky CTA separately if it exists in components */}
+        {screenData.components.map((component: any, index: number) => {
+          if (component.type === 'sticky_cta') {
+            return (
+              <View key={`sticky-${index}`} style={styles.stickyContainer}>
+                {renderComponent(component, index)}
+              </View>
+            );
+          }
+          return null;
+        })}
+      </View>
+    </SafeAreaView>
     </SafeAreaProvider>
-  );
-}
-
-function AppContent() {
-  const safeAreaInsets = useSafeAreaInsets();
-
-  return (
-    <View style={styles.container}>
-      <NewAppScreen
-        templateFileName="App.tsx"
-        safeAreaInsets={safeAreaInsets}
-      />
-    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: theme.colors.background,
+  },
+  content: {
+    flex: 1,
+    position: 'relative',
+  },
+  scrollContent: {
+    paddingBottom: 100, // Leave space for sticky CTA
+  },
+  stickyContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: theme.colors.background,
+    paddingHorizontal: theme.spacing.m,
+    paddingTop: theme.spacing.m,
+    paddingBottom: theme.spacing.xl, // Safe area padding
+    borderTopWidth: 1,
+    borderTopColor: theme.colors.border,
   },
 });
 
