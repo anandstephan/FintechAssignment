@@ -18,6 +18,7 @@ export const GoldRateBanner: React.FC<GoldRateBannerProps> = ({ data, enableLive
   const [currentChange, setCurrentChange] = useState(data.change);
   const [updatedAt, setUpdatedAt] = useState(data.updated_at);
   const [highlight, setHighlight] = useState(false);
+  const [countdown, setCountdown] = useState(300); // 5 minutes in seconds
 
   // Simulate WebSocket updates
   useEffect(() => {
@@ -43,15 +44,30 @@ export const GoldRateBanner: React.FC<GoldRateBannerProps> = ({ data, enableLive
       const seconds = now.getSeconds().toString().padStart(2, '0');
       
       setUpdatedAt(`${hours}:${minutes}:${seconds} ${ampm}`);
+      setCountdown(300); // Reset countdown on price update
 
       // Flash highlight to show update
       setHighlight(true);
       setTimeout(() => setHighlight(false), 500);
 
-    }, 5000); // Update every 5 seconds
+    }, 5000); // Update every 5 seconds (Reduced from 5min for demo, but kept timer logic)
 
     return () => clearInterval(interval);
   }, [enableLiveGoldRate]);
+
+  // Real countdown timer
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCountdown((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const formatCountdown = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
 
   const isPositiveChange = currentChange.startsWith('+');
 
@@ -78,7 +94,7 @@ export const GoldRateBanner: React.FC<GoldRateBannerProps> = ({ data, enableLive
         </View>
 
         <View style={styles.footerRow}>
-          <Text style={styles.updatedAt}>Price will refresh in 5:00 (Last updated {updatedAt})</Text>
+          <Text style={styles.updatedAt}>Price will refresh in {formatCountdown(countdown)} (Last updated {updatedAt})</Text>
         </View>
 
         <TouchableOpacity style={styles.button}>
