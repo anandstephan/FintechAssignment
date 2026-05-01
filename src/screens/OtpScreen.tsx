@@ -1,13 +1,23 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, SafeAreaView, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, SafeAreaView, KeyboardAvoidingView, Platform, Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { theme } from '../utils/theme';
 
 export const OtpScreen = ({ navigation }: any) => {
   const [otp, setOtp] = useState('');
 
-  const verifyOtp = () => {
-    // In a real app, verify OTP here. Then navigate to Dashboard.
-    navigation.navigate('Dashboard');
+  const verifyOtp = async () => {
+    if (otp === '1234') {
+      try {
+        await AsyncStorage.setItem('isLoggedIn', 'true');
+        navigation.replace('Dashboard');
+      } catch (e) {
+        console.error('Failed to save login state', e);
+        navigation.replace('Dashboard'); // Fallback to navigate anyway
+      }
+    } else {
+      Alert.alert('Invalid OTP', 'Please enter 1234');
+    }
   };
 
   return (

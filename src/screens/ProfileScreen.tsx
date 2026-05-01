@@ -1,6 +1,6 @@
-import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { theme } from '../utils/theme';
 
 interface MenuOptionProps {
@@ -28,13 +28,20 @@ const MenuOption: React.FC<MenuOptionProps> = ({ title, iconUrl, isLogout, onPre
 );
 
 export const ProfileScreen = ({ navigation }: any) => {
-  const handleLogout = () => {
-    // In a real app, clear auth tokens here
-    // Navigation to Login
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'Login' }],
-    });
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem('isLoggedIn');
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Login' }],
+      });
+    } catch (e) {
+      console.error('Failed to logout', e);
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Login' }],
+      });
+    }
   };
 
   return (

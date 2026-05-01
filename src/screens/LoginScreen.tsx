@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, SafeAreaView, KeyboardAvoidingView, Platform, Image } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, SafeAreaView, KeyboardAvoidingView, Platform, Image, Alert } from 'react-native';
 import { theme } from '../utils/theme';
 
 export const LoginScreen = ({ navigation }: any) => {
   const [mobile, setMobile] = useState('');
+
+  const handleSendOtp = () => {
+    if (mobile === '1234567890') {
+      navigation.navigate('Otp');
+    } else {
+      Alert.alert('Invalid Mobile Number', 'Please enter 1234567890');
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -59,7 +67,7 @@ export const LoginScreen = ({ navigation }: any) => {
 
         <View style={styles.footer}>
           <Text style={styles.sendOtpText}>Send OTP</Text>
-          <TouchableOpacity style={styles.sendOtpButton} onPress={() => navigation.navigate('Otp')}>
+          <TouchableOpacity style={styles.sendOtpButton} onPress={handleSendOtp}>
             <Text style={styles.arrowIcon}>→</Text>
           </TouchableOpacity>
         </View>
