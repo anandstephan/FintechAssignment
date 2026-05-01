@@ -27,13 +27,7 @@ export const mockResponse = {
           cta_text: 'Buy Now',
         },
       },
-      {
-        type: 'price_trend_chart',
-        data: {
-          title: 'Price Trend',
-          ranges: ['1M', '3M', '6M', '1Y', '3Y'],
-        },
-      },
+
       {
         type: 'investment_cards',
         data: {
@@ -49,13 +43,7 @@ export const mockResponse = {
               description: 'Instant purchase of digital gold',
               icon: 'https://cdn-icons-png.flaticon.com/512/3503/3503194.png',
               cta: 'Buy Gold',
-            },
-            {
-              title: 'Gold Leasing',
-              description: 'Lease gold and earn extra returns',
-              icon: 'https://cdn-icons-png.flaticon.com/512/3503/3503194.png', // Reusing an icon for demo
-              cta: 'Lease Now',
-            },
+            }
           ],
         },
       },
